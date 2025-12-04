@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Recruitment System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-upload {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .file-upload:hover {
+            background: #e9ecef;
+            border-color: #764ba2;
+        }
+
+        .file-upload.dragover {
+            background: #e7e9fc;
+            border-color: #667eea;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .requirements-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            white-space: pre-line;
+        }
+
+        .analysis-result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .skill-tag {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .skill-tag.missing {
+            background: #dc3545;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .config-status {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge.configured {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.not-configured {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+        }
+
+        .section-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .section-header h2 {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Recruitment System</h1>
+            <p>Automated recruitment powered by artificial intelligence</p>
+        </div>
+
+        <div class="main-content">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('apply')">📝 Apply</div>
+                <div class="tab" onclick="switchTab('config')">⚙️ Configuration</div>
+            </div>
+
+            <!-- Apply Tab -->
+            <div id="apply" class="tab-content active">
+                <div class="section-header">
+                    <h2>Submit Your Application</h2>
+                    <p>Upload your resume and apply for a position</p>
+                </div>
+
+                <div id="alert-container"></div>
+
+                <form id="applicationForm">
+                    <div class="form-group">
+                        <label for="role">Select Role *</label>
+                        <select id="role" required onchange="showRequirements()">
+                            <option value="">-- Select a role --</option>
+                            <option value="ai_ml_engineer">AI/ML Engineer</option>
+                            <option value="frontend_engineer">Frontend Engineer</option>
+                            <option value="backend_engineer">Backend Engineer</option>
+                        </select>
+                        <div id="requirements" class="requirements-box" style="display: none;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Resume (PDF) *</label>
+                        <div class="file-upload" id="fileUpload">
+                            <input type="file" id="resume" accept=".pdf" required>
+                            <div>
+                                <p>📄 Click to upload or drag and drop</p>
+                                <p style="color: #6c757d; font-size: 0.9rem;">PDF files only</p>
+                                <div class="file-name" id="fileName"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Processing your application...</p>
+                    </div>
+
+                    <div id="analysisResult" style="display: none;">
+                        <!-- Analysis results will be inserted here -->
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        📤 Submit Application
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()" style="margin-left: 10px;">
+                        🔄 Reset
+                    </button>
+                </form>
+            </div>
+
+            <!-- Configuration Tab -->
+            <div id="config" class="tab-content">
+                <div class="section-header">
+                    <h2>System Configuration</h2>
+                    <p>Configure API keys and credentials</p>
+                </div>
+
+                <div id="config-alert-container"></div>
+
+                <div class="config-status" id="configStatus">
+                    <!-- Status badges will be inserted here -->
+                </div>
+
+                <form id="configForm" style="margin-top: 30px;">
+                    <div class="section-header">
+                        <h3>Hugging Face Configuration</h3>
+                    </div>
+                    <div class="form-group">
+                        <label for="hf_token">Hugging Face Token *</label>
+                        <input type="password" id="hf_token" placeholder="hf_...">
+                    </div>
+
+                    <div class="section-header">
+                        <h3>Zoom Configuration</h3>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="zoom_account_id">Account ID</label>
+                            <input type="password" id="zoom_account_id">
+                        </div>
+                        <div class="form-group">
+                            <label for="zoom_client_id">Client ID</label>
+                            <input type="password" id="zoom_client_id">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="zoom_client_secret">Client Secret</label>
+                        <input type="password" id="zoom_client_secret">
+                    </div>
+
+                    <div class="section-header">
+                        <h3>Email Configuration</h3>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="email_sender">Sender Email</label>
+                            <input type="email" id="email_sender">
+                        </div>
+                        <div class="form-group">
+                            <label for="email_passkey">Email App Password</label>
+                            <input type="password" id="email_passkey">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="company_name">Company Name</label>
+                        <input type="text" id="company_name" value="AI Recruiting Team">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">💾 Save Configuration</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let currentResumeId = null;
+        let analysisData = null;
+
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'config') {
+                loadConfigStatus();
+            }
+        }
+
+        // Show requirements
+        async function showRequirements() {
+            const role = document.getElementById('role').value;
+            const requirementsDiv = document.getElementById('requirements');
+            
+            if (!role) {
+                requirementsDiv.style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/roles`);
+                const data = await response.json();
+                requirementsDiv.textContent = data.requirements[role];
+                requirementsDiv.style.display = 'block';
+            } catch (error) {
+                console.error('Error loading requirements:', error);
+            }
+        }
+
+        // File upload handling
+        const fileUpload = document.getElementById('fileUpload');
+        const fileInput = document.getElementById('resume');
+        const fileName = document.getElementById('fileName');
+
+        fileUpload.addEventListener('click', () => fileInput.click());
+
+        fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUpload.classList.add('dragover');
+        });
+
+        fileUpload.addEventListener('dragleave', () => {
+            fileUpload.classList.remove('dragover');
+        });
+
+        fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUpload.classList.remove('dragover');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileName();
+            }
+        });
+
+        fileInput.addEventListener('change', updateFileName);
+
+        function updateFileName() {
+            if (fileInput.files.length > 0) {
+                fileName.textContent = `✓ ${fileInput.files[0].name}`;
+            }
+        }
+
+        // Application form submission
+        document.getElementById('applicationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const role = document.getElementById('role').value;
+            const email = document.getElementById('email').value;
+            const resume = fileInput.files[0];
+
+            if (!resume) {
+                showAlert('Please upload a resume', 'error');
+                return;
+            }
+
+            // Step 1: Upload resume
+            showLoading(true);
+            clearAlert();
+
+            try {
+                const formData = new FormData();
+                formData.append('file', resume);
+                formData.append('candidate_email', email);
+                formData.append('role', role);
+
+                const uploadResponse = await fetch(`${API_BASE}/api/upload-resume`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    const error = await uploadResponse.json();
+                    throw new Error(error.detail || 'Upload failed');
+                }
+
+                const uploadData = await uploadResponse.json();
+                currentResumeId = uploadData.data.resume_id;
+
+                // Step 2: Analyze resume
+                const analyzeFormData = new FormData();
+                analyzeFormData.append('candidate_email', email);
+                analyzeFormData.append('role', role);
+
+                const analyzeResponse = await fetch(`${API_BASE}/api/analyze-resume`, {
+                    method: 'POST',
+                    body: analyzeFormData
+                });
+
+                if (!analyzeResponse.ok) {
+                    const error = await analyzeResponse.json();
+                    throw new Error(error.detail || 'Analysis failed');
+                }
+
+                analysisData = await analyzeResponse.json();
+                displayAnalysisResult(analysisData, email, role);
+
+            } catch (error) {
+                showAlert(error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        function displayAnalysisResult(data, email, role) {
+            const resultDiv = document.getElementById('analysisResult');
+            
+            if (data.is_selected) {
+                resultDiv.innerHTML = `
+                    <div class="analysis-result">
+                        <h3 style="color: #28a745;">✅ Congratulations! You're Selected</h3>
+                        <p><strong>Feedback:</strong> ${data.feedback}</p>
+                        
+                        ${data.matching_skills ? `
+                            <div style="margin-top: 15px;">
+                                <strong>Matching Skills:</strong>
+                                <div class="skill-list">
+                                    ${data.matching_skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        ${data.experience_level ? `
+                            <p style="margin-top: 15px;"><strong>Experience Level:</strong> ${data.experience_level}</p>
+                        ` : ''}
+                        
+                        <button class="btn btn-success" onclick="processApplication('${email}', '${role}')" style="margin-top: 20px;">
+                            🚀 Proceed with Application
+                        </button>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="analysis-result">
+                        <h3 style="color: #dc3545;">❌ Application Not Selected</h3>
+                        <p><strong>Feedback:</strong> ${data.feedback}</p>
+                        
+                        ${data.missing_skills ? `
+                            <div style="margin-top: 15px;">
+                                <strong>Missing Skills:</strong>
+                                <div class="skill-list">
+                                    ${data.missing_skills.map(skill => `<span class="skill-tag missing">${skill}</span>`).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <p style="margin-top: 15px; font-style: italic;">We've sent you an email with detailed feedback and resources to help you improve.</p>
+                        
+                        <button class="btn btn-secondary" onclick="sendRejectionEmail('${email}', '${role}')" style="margin-top: 15px;">
+                            📧 Send Feedback Email
+                        </button>
+                    </div>
+                `;
+            }
+            
+            resultDiv.style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+        }
+
+        async function sendRejectionEmail(email, role) {
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/send-email`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        candidate_email: email,
+                        role: role,
+                        email_type: 'rejection',
+                        feedback: analysisData.feedback
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to send email');
+
+                showAlert('Feedback email sent successfully!', 'success');
+            } catch (error) {
+                showAlert(error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function processApplication(email, role) {
+            showLoading(true);
+            clearAlert();
+
+            try {
+                const formData = new FormData();
+                formData.append('candidate_email', email);
+                formData.append('role', role);
+
+                const response = await fetch(`${API_BASE}/api/process-application`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Processing failed');
+                }
+
+                showAlert('🎉 Application processed! Check your email for interview details.', 'success');
+                
+                setTimeout(() => {
+                    resetForm();
+                }, 3000);
+
+            } catch (error) {
+                showAlert(error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Configuration
+        async function loadConfigStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/api/config`);
+                const data = await response.json();
+                
+                const statusDiv = document.getElementById('configStatus');
+                statusDiv.innerHTML = `
+                    <span class="status-badge ${data.has_hf_token ? 'configured' : 'not-configured'}">
+                        Hugging Face: ${data.has_hf_token ? '✓ Configured' : '✗ Not Configured'}
+                    </span>
+                    <span class="status-badge ${data.has_zoom_config ? 'configured' : 'not-configured'}">
+                        Zoom: ${data.has_zoom_config ? '✓ Configured' : '✗ Not Configured'}
+                    </span>
+                    <span class="status-badge ${data.has_email_config ? 'configured' : 'not-configured'}">
+                        Email: ${data.has_email_config ? '✓ Configured' : '✗ Not Configured'}
+                    </span>
+                `;
+            } catch (error) {
+                console.error('Error loading config status:', error);
+            }
+        }
+
+        document.getElementById('configForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const config = {
+                hf_token: document.getElementById('hf_token').value,
+                zoom_account_id: document.getElementById('zoom_account_id').value,
+                zoom_client_id: document.getElementById('zoom_client_id').value,
+                zoom_client_secret: document.getElementById('zoom_client_secret').value,
+                email_sender: document.getElementById('email_sender').value,
+                email_passkey: document.getElementById('email_passkey').value,
+                company_name: document.getElementById('company_name').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/config`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+
+                if (!response.ok) throw new Error('Failed to save configuration');
+
+                showAlert('Configuration saved successfully!', 'success', 'config-alert-container');
+                loadConfigStatus();
+                
+                // Clear form
+                document.getElementById('configForm').reset();
+
+            } catch (error) {
+                showAlert(error.message, 'error', 'config-alert-container');
+            }
+        });
+
+        // Utility functions
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('show', show);
+        }
+
+        function showAlert(message, type, container = 'alert-container') {
+            const alertDiv = document.getElementById(container);
+            alertDiv.innerHTML = `<div class="alert alert-${type} show">${message}</div>`;
+            
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        function clearAlert(container = 'alert-container') {
+            document.getElementById(container).innerHTML = '';
+        }
+
+        function resetForm() {
+            document.getElementById('applicationForm').reset();
+            document.getElementById('fileName').textContent = '';
+            document.getElementById('analysisResult').style.display = 'none';
+            document.getElementById('requirements').style.display = 'none';
+            document.getElementById('submitBtn').disabled = false;
+            currentResumeId = null;
+            analysisData = null;
+            clearAlert();
+        }
+
+        // Load config status on page load
+        loadConfigStatus();
+    </script>
+</body>
+</html>
