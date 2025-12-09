@@ -44,7 +44,7 @@ COMPANY_NAME=Your Company Name
 python -m uvicorn agent.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-# Or directly with Python
+### Or directly with Python
 python src/agent/main.py
 ```
 
@@ -68,7 +68,7 @@ Then open your browser to: http://localhost:8000
 
 ## Project Structure
 
-```
+
 agent/
 ├── src/
 │   └── agent/
@@ -82,7 +82,7 @@ agent/
 │           └── index.html   # Frontend interface
 ├── pyproject.toml
 └── README.md
-```
+
 
 ## Available Roles
 
@@ -141,10 +141,6 @@ uvicorn agent.main:app --reload
 - **Communication**: Zoom API, SMTP Email
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 - **File Processing**: PyPDF2
-
-## License
-
-MIT License
 
 ## Author
 
